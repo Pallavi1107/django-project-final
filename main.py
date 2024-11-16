@@ -1,1 +1,1 @@
-print('This is a main file')
+print('This is a main')
