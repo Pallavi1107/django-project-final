@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from .models import Client, Project
-from .serializers import ClientSerializer, ProjectSerializer,ClientSerializerId
+from .serializers import ClientSerializer, ProjectSerializer,ClientSerializerId,ClientSerializerUpdate,ProjectSerializerId
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
@@ -19,17 +19,18 @@ class ClientDetailViewid(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'id'
 
 class ProjectCreateView(generics.CreateAPIView):
-    serializer_class = ProjectSerializer
+    serializer_class = ProjectSerializerId
 
     def perform_create(self, serializer):
-        client = get_object_or_404(Client, id=self.kwargs['id'])  # Corrected here
+        client = get_object_or_404(Client, id=self.kwargs['id'])
         serializer.save(client=client, created_by=self.request.user)
 
 class UserProjectsView(generics.ListAPIView):
     serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.request.user.projects.all()
+        return Project.objects.all()
 
 class ClientDestroyView(generics.DestroyAPIView):
     queryset = Client.objects.all()
@@ -39,3 +40,10 @@ class ClientDestroyView(generics.DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         response = super().destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ClientUpdateView(generics.UpdateAPIView):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializerUpdate
+    lookup_field = 'id'
+
