@@ -23,7 +23,11 @@ class ProjectCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         client = get_object_or_404(Client, id=self.kwargs['id'])
-        serializer.save(client=client, created_by=self.request.user)
+        created_by = self.request.user
+        project = serializer.save(client=client, created_by=created_by)
+        users = self.request.data.get('users', [])
+        if users:
+            project.users.set(users)
 
 class UserProjectsView(generics.ListAPIView):
     serializer_class = ProjectSerializer
