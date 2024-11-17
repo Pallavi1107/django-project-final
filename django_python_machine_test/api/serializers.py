@@ -8,7 +8,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username']
 
 class ProjectSerializer(serializers.ModelSerializer):
-    # users = UserSerializer(many=True, read_only=True)
     created_by = serializers.CharField(source='created_by.username', read_only=True)
     class Meta:
         model = Project
@@ -48,3 +47,4 @@ class ClientSerializerUpdate(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = ['id', 'client_name', 'created_at', 'created_by','updated_at']
+        depth = 0
