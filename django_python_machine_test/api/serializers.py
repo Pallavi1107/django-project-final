@@ -8,14 +8,21 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username']
 
 class ProjectSerializer(serializers.ModelSerializer):
-    users = UserSerializer(many=True, read_only=True)
+    # users = UserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
-        fields = ['id', 'project_name', 'client', 'users', 'created_at', 'created_by']
+        fields = ['id', 'project_name','created_at', 'created_by']
+
+class ProjectSerializerId(serializers.ModelSerializer):
+    # users = UserSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ['id', 'project_name']
 
 class ClientSerializerId(serializers.ModelSerializer):
-    projects = ProjectSerializer(many=True, read_only=True)
+    projects = ProjectSerializerId(many=True, read_only=True)
     created_by = serializers.StringRelatedField()
 
     class Meta:
